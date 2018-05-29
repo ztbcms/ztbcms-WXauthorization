@@ -24,6 +24,9 @@ class IndexController extends AdminBase {
         }
     }
 
+    /**
+     * 微信第三方平台信息页
+     */
     public function index() {
         if(IS_POST){
             $data = I('post.');
@@ -63,6 +66,7 @@ class IndexController extends AdminBase {
             $this->display();
         }
     }
+
     //草稿箱
     public function draft(){
         $data = M('wx_access_token')->order(array('id' => 'desc'))->find();
@@ -76,6 +80,7 @@ class IndexController extends AdminBase {
         $this->assign('draft_list',$res['draft_list']);
         $this->display();
     }
+
     //模板库
     public function library(){
         $data = M('wx_access_token')->order(array('id' => 'desc'))->find();
@@ -88,6 +93,7 @@ class IndexController extends AdminBase {
         $this->assign('template_list',$res['template_list']);
         $this->display();
     }
+
     //提交模板库
     public function post_draft(){
         $access_token = M('wx_access_token')->order(array('id' => 'desc'))->find();
@@ -146,7 +152,9 @@ class IndexController extends AdminBase {
         return $res;
     }
 
-    //第三方授权
+    /**
+     * 更新第三方平台的access_token(根据veritfy ticket)
+     */
     public function get_component_access_token(){
         $res = $this->component_detail();   //获取第三方平台基础信息
         $last_time = $res['token_time'];	//上一次component_access_token获取时间

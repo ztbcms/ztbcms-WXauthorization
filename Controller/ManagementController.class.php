@@ -9,11 +9,15 @@ namespace WXauthorization\Controller;
 use Common\Controller\AdminBase;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
+/**
+ * 授权应用管理页面
+ */
 class ManagementController extends AdminBase {
 
 	//初始化
 	protected function _initialize() {
         parent::_initialize();
+        //判断权限
         $eo = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
         $in1 = strstr($eo,'http://auth.wxapp.yidian168.cn/index.php?g=WXauthorization&m=Management&a=management');
         $in2 = strstr($eo,'http://auth.wxapp.yidian168.cn/index.php?g=WXauthorization&m=Management&menuid=117');
@@ -326,6 +330,9 @@ class ManagementController extends AdminBase {
         $this->ajaxReturn($result);
     }
 
+    /**
+     * 操作记录列表
+     */
     public function content_list() {
         //按类别搜索时的类别关键字
         $category = I('category');
@@ -342,7 +349,7 @@ class ManagementController extends AdminBase {
         $this->ajaxReturn(self::createReturn(true, $data));
     }
 
-    //列表
+    //获取操作记录列表
     public static function ajax_content_list($category = '', $start_date = '', $end_date = '', $page = 1, $limit = 20, $message = '')
     {
         $db = M('wx_submitcode');

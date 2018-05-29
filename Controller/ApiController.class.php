@@ -11,6 +11,10 @@ use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class ApiController extends Base {
 
+    /**
+     * 处理微信10分钟发送一次的 verify_ticket
+     * todo 加入日志处理
+     */
     public function index(){
         include_once  dirname(__FILE__). '/wxapp/WXBizMsgCrypt.php';
         $trilateraluser = M('wx_trilateraluser')->find();
@@ -74,7 +78,7 @@ class ApiController extends Base {
         return $res;
     }
 
-    //授权后保存信息
+    //扫码授权后-保存信息
     public function wx_parties_callback(){
         $tok = $this->component_detail();
         $component_access_token = $tok['component_access_token'];
