@@ -14,20 +14,20 @@ class ManagementController extends AdminBase {
 	//初始化
 	protected function _initialize() {
         parent::_initialize();
-        $eo = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
-        $in1 = strstr($eo,'http://auth.wxapp.yidian168.cn/index.php?g=WXauthorization&m=Management&a=management');
-        $in2 = strstr($eo,'http://auth.wxapp.yidian168.cn/index.php?g=WXauthorization&m=Management&menuid=117');
-        $in3 = strstr($eo, 'http://auth.wxapp.yidian168.cn/index.php?g=WXauthorization&m=Management&a=authorizer_refresh_token');
-        $in4 = strstr($eo,'http://auth.wxapp.yidian168.cn/index.php?g=WXauthorization&m=management&a=content_list');
+        $eo = $_SERVER['QUERY_STRING'];
+        $in1 = strstr($eo,'g=WXauthorization&m=Management&a=management');
+        $in2 = strstr($eo,'g=WXauthorization&m=Management');
+        $in3 = strstr($eo, 'g=WXauthorization&m=Management&a=authorizer_refresh_token');
+        $in4 = strstr($eo,'g=WXauthorization&m=management&a=content_list');
 
         if($in1 != false || $in2 != false|| $in3 != false || $in4 != false){
         } else {
-//            $where['authorizer_appid'] = I('authorizer_appid');
-//            $res = M('wx_authorizer_access_token')->where($where)->find();
-//            if($res['expires_in'] - time() < 60){
-//                $this->success('你令牌授权需要重新授权',U('WXauthorization/Management/index'));
-//                exit;
-//            }
+            $where['authorizer_appid'] = I('authorizer_appid');
+            $res = M('wx_authorizer_access_token')->where($where)->find();
+            if($res['expires_in'] - time() < 60){
+                $this->success('你令牌授权需要重新授权',U('WXauthorization/Management/index'));
+                exit;
+            }
             $trilateraluser = M('wx_trilateraluser')->find();
             if($trilateraluser['trilateralaccess_token_time'] - time() < 60){
                 $this->success('您的第三方授权需要重新授权',U('WXauthorization/index/index'));
@@ -102,6 +102,7 @@ class ManagementController extends AdminBase {
     //代码上传
     public function wx_upload_code(){
         if(IS_POST){
+            $authorizer_appid = I('authorizer_appid');
             $configuration_name = I('configuration_name');
             $configuration_information = I('configuration_information');
             foreach ($configuration_name as $key => $val){
@@ -168,12 +169,14 @@ class ManagementController extends AdminBase {
                 $daws['template_id'] = $template_id;
                 $daws['message'] = "成功上传模板".$template_id."代码版本为".$user_version;
                 $daws['type'] = '1';
+                $daws['authorizer_appid'] = $authorizer_appid;
                 M('wx_submitcode')->add($daws);
                 $this->success('代码上传成功',U('WXauthorization/Management/index'));
             } else {
                 $this->success('代码上传失败');
             }
         } else {
+            $this->assign('authorizer_appid',I('authorizer_appid'));
             $this->display();
         }
     }
@@ -247,6 +250,7 @@ class ManagementController extends AdminBase {
                 $daws['addtime'] = time();
                 $daws['status'] = $result['status'];
                 $daws['type'] = '2';
+                $daws['authorizer_appid'] = $authorizer_appid;
                 M('wx_submitcode')->add($daws);
                 $this->success('提交审核成功');
             }
@@ -337,17 +341,21 @@ class ManagementController extends AdminBase {
         $limit = I('limit', 20);
         //按内容搜索时的日志内容关键字
         $message = I('message');
-        $data = $this->ajax_content_list($category, $start_date, $end_date, $page, $limit, $message);
+        $authorizer_appid = I('authorizer_appid');
+        $data = $this->ajax_content_list($category, $start_date, $end_date, $page, $limit, $message,$authorizer_appid);
         //返回数据
         $this->ajaxReturn(self::createReturn(true, $data));
     }
 
     //列表
-    public static function ajax_content_list($category = '', $start_date = '', $end_date = '', $page = 1, $limit = 20, $message = '')
+    public static function ajax_content_list($category = '', $start_date = '', $end_date = '', $page = 1, $limit = 20, $message = '',$authorizer_appid)
     {
         $db = M('wx_submitcode');
         //初始化条件数组
         $where = array();
+        if(!empty($authorizer_appid)){
+            $where['authorizer_appid'] = $authorizer_appid;
+        }
         if (!empty($start_date) && !empty($end_date)) {
             //将输入的起始和结束时间转换成时间戳
             $start_date = strtotime($start_date);
@@ -407,6 +415,7 @@ class ManagementController extends AdminBase {
         if($result['errcode'] == '0'){
             $daws['type'] = '1';
             $daws['message'] = '进行版本回滚成功';
+            $daws['authorizer_appid'] = $authorizer_appid;
             M('wx_submitcode')->add();
         }
         if($result['errcode'] == '87011'){

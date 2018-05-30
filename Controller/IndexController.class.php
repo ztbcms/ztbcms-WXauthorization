@@ -14,8 +14,10 @@ class IndexController extends AdminBase {
     protected function _initialize() {
         parent::_initialize();
         $eo = $_SERVER['QUERY_STRING'];
-        $in1 = strstr($eo,'&m=index');
-        if($in1 != false ){
+        $in1 = strstr($eo,'g=WXauthorization&menuid');
+        $in2 = strstr($eo,'&m=index&a=get_component_access_token');
+        if($in1 != false || $in2 != false){
+        } else {
             $trilateraluser = M('wx_trilateraluser')->find();
             if($trilateraluser['trilateralaccess_token_time'] - time() < 60){
                 $this->success('您的第三方授权需要重新授权',U('WXauthorization/index/index'));

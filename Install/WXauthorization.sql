@@ -43,6 +43,7 @@ CREATE TABLE `cms_wx_submitcode`  (
   `type` int(1) NULL DEFAULT NULL COMMENT '信息的类型',
   `message` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '信息内容',
   `template_id` int(11) NULL DEFAULT NULL COMMENT '上传的模板id',
+  `authorizer_appid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '授权方id',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB  CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 

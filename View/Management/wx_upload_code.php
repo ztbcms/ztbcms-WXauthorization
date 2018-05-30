@@ -36,6 +36,7 @@
             <div class="h_a">代码上传必备参数</div>
             <div class="table_full">
                 <table width="100%" class="table_form ">
+                    <input type="hidden" value="{$authorizer_appid}" name="authorizer_appid">
                     <tr>
                         <th>代码库中的代码模版ID(template_id)（必填）：</th>
                         <td><input type="text" name="template_id" id="catname" class="template_id" value=""></td>
