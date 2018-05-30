@@ -9,6 +9,9 @@ namespace WXauthorization\Controller;
 use Common\Controller\AdminBase;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
+/**
+ * 授权应用管理页面
+ */
 class ManagementController extends AdminBase {
 
 	//初始化
@@ -330,6 +333,9 @@ class ManagementController extends AdminBase {
         $this->ajaxReturn($result);
     }
 
+    /**
+     * 操作记录列表
+     */
     public function content_list() {
         //按类别搜索时的类别关键字
         $category = I('category');
@@ -347,7 +353,7 @@ class ManagementController extends AdminBase {
         $this->ajaxReturn(self::createReturn(true, $data));
     }
 
-    //列表
+    //获取操作记录列表
     public static function ajax_content_list($category = '', $start_date = '', $end_date = '', $page = 1, $limit = 20, $message = '',$authorizer_appid)
     {
         $db = M('wx_submitcode');
