@@ -62,11 +62,19 @@ class ManagementController extends AdminBase {
         $authorizer_access_token = M('wx_authorizer_access_token')->where($where)->find();
         $trilateraluser = M('wx_trilateraluser')->find();
         $component_access_token = $trilateraluser['trilateralaccess_token'];
+        $component_access_token_time = $trilateraluser['trilateralaccess_token_time'];
+        if($component_access_token_time < time()){
+            $this->success('您的第三方盾牌已失效，请重新授权',U('WXauthorization/Management/index'));
+        }
         $url ="https://api.weixin.qq.com/cgi-bin/component/api_authorizer_token?component_access_token=$component_access_token";
         $data['component_appid'] = $trilateraluser['trilateralappid'];
         $data['authorizer_appid'] = $authorizer_access_token['authorizer_appid'];
         $data['authorizer_refresh_token'] = $authorizer_access_token['authorizer_refresh_token'];
         $res = $this->post_data($url,$data);
+        if($res['errcode'] = '61003'){
+            $this->success('该程序取消了对您的授权',U('WXauthorization/Management/index'));
+            exit;
+        }
         $up['authorizer_access_token'] = $res['authorizer_access_token'];
         $up['authorizer_refresh_token'] = $res['authorizer_refresh_token'];
         $up['expires_in'] = $res['expires_in'] +  time();
