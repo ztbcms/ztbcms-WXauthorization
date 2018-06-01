@@ -44,6 +44,8 @@
                 </tbody>
             </table>
 
+<!--            <input value="侧ad" id="authorizer_appid" class="authorizer_appid"  v-model="authorizer_appid">-->
+
             <div style="text-align: center">
                 <ul class="pagination pagination-sm no-margin">
                     <button @click="toPage( parseInt(where.page) - 1 )" class="btn btn-primary">上一页</button>
@@ -111,7 +113,7 @@
                         start_date: '',
                         end_date: '',
                         page: 1,
-                        limit: 20
+                        limit: 20,
                     },
                     logs: {},
                     temp_page: 1,
@@ -134,7 +136,7 @@
                     getList: function () {
                         var that = this;
                         $.ajax({
-                            url: '{:U("WXauthorization/management/content_list")}',
+                            url: '{:U("WXauthorization/VueList/content_list")}',
                             data: that.where,
                             type: 'get',
                             dataType: 'json',

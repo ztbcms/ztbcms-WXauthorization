@@ -85,7 +85,7 @@
                     getList: function () {
                         var that = this;
                         $.ajax({
-                            url: '{:U("WXauthorization/AueList/index")}',
+                            url: '{:U("WXauthorization/VueList/index")}',
                             data: that.where,
                             type: 'get',
                             dataType: 'json',
