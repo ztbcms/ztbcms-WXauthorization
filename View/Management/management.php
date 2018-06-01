@@ -29,6 +29,7 @@
                 <thead>
                 <tr style="background: gainsboro;">
                     <td align="center" width="80">ID</td>
+                    <td align="center">authorizer_appid</td>
                     <td align="center" width="300">模板号\审核编号</td>
                     <td align="center">内容</td>
                     <td align="center" width="160">发布时间</td>
@@ -37,14 +38,13 @@
                 <tbody>
                 <tr v-for="item in logs">
                     <td align="center">{{item.id}}</td>
+                    <td align="center">{{item.authorizer_appid}}</td>
                     <td align="center">{{item.auditid}}</td>
                     <td align="center"><div style="word-wrap:break-word">{{item.status}}</div></td>
                     <td align="center">{{item.addtime|getFormatTime}}</td>
                 </tr>
                 </tbody>
             </table>
-
-<!--            <input value="侧ad" id="authorizer_appid" class="authorizer_appid"  v-model="authorizer_appid">-->
 
             <div style="text-align: center">
                 <ul class="pagination pagination-sm no-margin">
