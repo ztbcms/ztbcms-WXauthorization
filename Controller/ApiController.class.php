@@ -16,6 +16,8 @@ class ApiController extends Base {
      * todo 加入日志处理
      */
     public function index(){
+        var_dump($var = S("verify_ticket"));
+        exit;
         include_once  dirname(__FILE__). '/wxapp/WXBizMsgCrypt.php';
         $trilateraluser = M('wx_trilateraluser')->find();
 //            $encodingAesKey = 'e456bacc1a47f55549a2d70ee7cd3b00e456bacc1a4';
@@ -36,12 +38,6 @@ class ApiController extends Base {
         $encrypt = $array_e->item(0)->nodeValue;
         $format = "<xml><ToUserName><![CDATA[toUser]]></ToUserName><Encrypt><![CDATA[%s]]></Encrypt></xml>";
         $from_xml = sprintf($format, $encrypt);
-        $data['timeStamp'] = $timeStamp;
-        $data['nonce'] = $nonce;
-        $data['msg_sign'] = $msg_sign;
-        $data['from_xml'] = $from_xml;
-        $data['message'] = serialize($data);
-        $res = M('wx_verify_ticket')->add($data);
         $msg = '';
         $errCode = $pc->decryptMsg($msg_sign, $timeStamp, $nonce, $from_xml, $msg);
         $component_verify_ticket =""; //解密成功
@@ -50,11 +46,19 @@ class ApiController extends Base {
             $xml->loadXML($msg);
             $array_e = $xml->getElementsByTagName('ComponentVerifyTicket');
             $component_verify_ticket = $array_e->item(0)->nodeValue;
-            $map['id'] = $res;
-            $ed['verify_ticket'] = $component_verify_ticket;
 
+
+            $data['timeStamp'] = $timeStamp;
+            $data['nonce'] = $nonce;
+            $data['msg_sign'] = $msg_sign;
+            $data['from_xml'] = $from_xml;
+            $data['message'] = serialize($data);
+            $data['verify_ticket'] = $component_verify_ticket;
+            $res = M('wx_verify_ticket')->add($data);
+            if($res > 0){
+                S("verify_ticket",$component_verify_ticket,3600);
+            }
             $wf['trilateralVerify_ticket'] = $component_verify_ticket;
-            M('wx_verify_ticket')->where($map)->save($ed);
             M('wx_trilateraluser')->where(array('trilateralAppID'=>$trilateraluser['trilateralappid']))->save($wf);
             echo "success";
         }
