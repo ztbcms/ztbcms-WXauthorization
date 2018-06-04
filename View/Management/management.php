@@ -13,7 +13,7 @@
             <a style="margin:20px 20px 20px 20px;"  class="btn btn-success post_latest">查询最新一次提交的审核状态</a>
             <a style="margin:20px 20px 20px 20px;"  class="btn btn-success release_program">发布已通过审核的小程序</a>
             <a style="margin:20px 20px 20px 20px;"  class="btn btn-success versionBack">小程序版本回退</a>
-            <input type="hidden" class="authorizer_appid" value="{$authorizer_appid}">
+            <input type="hidden" class="authorizer_appid" value="{$authorizer_appid}" ref="getval">
         </table>
         <hr>
         <div class="search_type cc mb10">
@@ -21,6 +21,7 @@
             <input type="text" name="start_date" class="input datepicker" >
             -
             <input type="text" name="end_date" class="input datepicker">
+            <input type="text" class="message">
             <button class="btn btn-primary" style="margin-left: 8px;" @click="search">搜索</button>
         </div>
         <hr>
@@ -100,6 +101,7 @@
                 layer.alert(data.errmsg);
             })
         })
+
     </script>
 
     <script>
@@ -165,15 +167,21 @@
                         this.where.page = 1;
                         this.where.start_date = $('input[name="start_date"]').val();
                         this.where.end_date = $('input[name="end_date"]').val();
+                        this.where.message = $('.message').val();
                         this.getList();
                     }
                 },
                 mounted: function () {
                     document.getElementById('app').style.display = 'block';
+                    this.where.authorizer_appid = this.$refs.getval.value;
+                    if(this.where.authorizer_appid != ''){
+                        this.getList();
+                    }
                     this.getList();
                 }
             });
         });
     </script>
+        
 
 </block>
